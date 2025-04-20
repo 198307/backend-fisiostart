@@ -14,6 +14,7 @@ export const insertarPacientePublico = `
   VALUES ($1, $2, $3, $4, $5, NULL, NULL, NULL, 'pendiente')
   RETURNING *
 `
+//ALTER TABLE pacientes ADD COLUMN estado varchar(20) DEFAULT 'pendiente';
 
 // 🔹 Registro completo (panel secretaria)
 export const insertarPaciente = `
