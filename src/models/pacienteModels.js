@@ -1,5 +1,5 @@
 export class Paciente {
-    constructor({ cedula, nombre, apellidos, direccion, telefono, email, fecha_nacimiento, sexo }) {
+    constructor({ cedula, nombre, apellidos, direccion, telefono, email, fecha_nacimiento, sexo,estado }) {
       this.cedula = cedula
       this.nombre = nombre
       this.apellidos = apellidos
@@ -8,6 +8,7 @@ export class Paciente {
       this.email = email
       this.fecha_nacimiento = fecha_nacimiento
       this.sexo = sexo
+      this.estado = estado
     }
   }
   

@@ -1,11 +1,24 @@
 import { Router } from 'express'
-import { crearPacienteController, listarPacientesController } from '../controllers/pacienteController.js'
+import {
+  crearPacientePublicoController,
+  crearPacienteController,
+  listarPacientesController,
+  listarPacientesPendientesController,
+  actualizarPacienteController,
+  eliminarPacienteController
+} from '../controllers/pacienteController.js'
 import { verifyToken } from '../middlewares/verifyToken.js'
-import { checkRole } from '../middlewares/checkRole.js'
 
 const router = Router()
 
-router.get('/', verifyToken, checkRole([3, 2]), listarPacientesController)  // admin y secretarias
-router.post('/', verifyToken, checkRole([3, 2]), crearPacienteController)   // admin y secretarias
+// 🔓 Público (formulario de pre-registro)
+router.post('/publico', crearPacientePublicoController)
+
+// 🔐 Protegidas (panel secretaria)
+router.get('/', verifyToken, listarPacientesController)
+router.get('/pendientes', verifyToken, listarPacientesPendientesController)
+router.post('/', verifyToken, crearPacienteController)
+router.put('/', verifyToken, actualizarPacienteController)
+router.delete('/:cedula', verifyToken, eliminarPacienteController)
 
 export default router
