@@ -1,6 +1,11 @@
 import pool from '../config/conex.js'
 import bcrypt from 'bcrypt'
-import { insertarMedico, obtenerMedicos } from '../queries/medicoQueries.js'
+import {
+  obtenerMedicos,
+  insertarMedicoConEspecialidades,
+  actualizarMedicoConEspecialidades,
+  eliminarMedico
+} from '../queries/medicoQueries.js'
 
 // Crear un nuevo médico
 export const crearMedicoService = async (medico) => {
@@ -12,21 +17,20 @@ export const crearMedicoService = async (medico) => {
     email,
     username,
     password,
-    rol_id
+    especialidades = []
   } = medico
 
-  // Encriptar la contraseña antes de guardar
   const hashedPassword = await bcrypt.hash(password, 10)
 
-  const result = await pool.query(insertarMedico, [
+  const result = await pool.query(insertarMedicoConEspecialidades, [
     cedula,
     nombre,
     apellidos,
     telefono,
     email,
     username,
-    hashedPassword, // contraseña segura
-    rol_id
+    hashedPassword,
+    especialidades
   ])
 
   return result.rows[0]
@@ -35,7 +39,42 @@ export const crearMedicoService = async (medico) => {
 // Obtener todos los médicos estructurados
 export const obtenerMedicosService = async () => {
   const result = await pool.query(obtenerMedicos)
-
-  // Extraer solo el contenido del campo "medico" de cada fila
   return result.rows.map(row => row.medico)
+}
+
+// Actualizar médico y especialidades
+export const actualizarMedicoService = async (id, datos) => {
+  const {
+    cedula,
+    nombre,
+    apellidos,
+    telefono,
+    email,
+    username,
+    password,
+    especialidades = []
+  } = datos
+
+  // Si no hay contraseña, mandamos null para evitar cambiarla
+  const hashedPassword = password ? await bcrypt.hash(password, 10) : null
+
+  const result = await pool.query(actualizarMedicoConEspecialidades, [
+    id,
+    cedula,
+    nombre,
+    apellidos,
+    telefono,
+    email,
+    username,
+    hashedPassword,
+    especialidades
+  ])
+
+  return result.rows[0]
+}
+
+// Eliminar médico (y sus especialidades)
+export const eliminarMedicoService = async (id) => {
+  await pool.query(eliminarMedico, [id])
+  return { mensaje: 'Médico eliminado correctamente' }
 }

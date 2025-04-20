@@ -18,11 +18,11 @@ export const loginUsuarioService = async (username, password) => {
     throw new Error('Contraseña incorrecta')
   }
 
-  // Generar token
+  // Generar token con el ID del rol (no con el nombre)
   const token = jwt.sign(
     {
       id: usuario.id,
-      rol: usuario.rol.nombre,
+      rol: usuario.rol.id, // ✅ Se envía el ID (ej: 1, 2, 3), compatible con checkRole
       nombre: usuario.nombre,
       apellidos: usuario.apellidos
     },
@@ -30,17 +30,17 @@ export const loginUsuarioService = async (username, password) => {
     { expiresIn: '2h' }
   )
 
-  // Armar objeto final
+  // Construir el objeto del usuario que se devolverá
   const usuarioFinal = {
     id: usuario.id,
     nombre: usuario.nombre,
     apellidos: usuario.apellidos,
     username: usuario.username,
     email: usuario.email,
-    rol: usuario.rol
+    rol: usuario.rol // objeto completo: { id, nombre }
   }
 
-  // Agregar especialidades solo si aplica
+  // Solo agregar especialidades si es médico
   if (usuario.rol.nombre === 'medico') {
     usuarioFinal.especialidades = usuario.especialidades
   }
