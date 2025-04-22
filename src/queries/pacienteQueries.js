@@ -16,7 +16,8 @@ export const insertarPacientePublico = `
 `
 //ALTER TABLE pacientes ADD COLUMN estado varchar(20) DEFAULT 'pendiente';
 
-// 🔹 Registro completo (panel secretaria)
+// 🔹 Registro completo (panel secretaria) 
+//pacientes
 export const insertarPaciente = `
   INSERT INTO pacientes (
     cedula,
