@@ -4,6 +4,6 @@ import { verifyToken } from '../middlewares/verifyToken.js'
 
 const router = Router()
 
-router.get('/', verifyToken, listarEspecialidadesController)
+router.get('/', listarEspecialidadesController)
 
 export default router
