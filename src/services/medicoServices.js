@@ -4,7 +4,7 @@ import {
   obtenerMedicos,
   insertarMedicoConEspecialidades,
   actualizarMedicoConEspecialidades,
-  eliminarMedico
+  eliminarMedico,obtenerMedicosPorEspecialidad
 } from '../queries/medicoQueries.js'
 
 // Crear un nuevo médico
@@ -78,3 +78,9 @@ export const eliminarMedicoService = async (id) => {
   await pool.query(eliminarMedico, [id])
   return { mensaje: 'Médico eliminado correctamente' }
 }
+
+export const listarMedicosPorEspecialidadService = async (especialidad_id) => {
+  const result = await pool.query(obtenerMedicosPorEspecialidad, [especialidad_id])
+  return result.rows
+}
+

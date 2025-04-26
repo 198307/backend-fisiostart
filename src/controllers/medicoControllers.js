@@ -2,7 +2,7 @@ import {
   crearMedicoService,
   obtenerMedicosService,
   actualizarMedicoService,
-  eliminarMedicoService
+  eliminarMedicoService,listarMedicosPorEspecialidadService
 } from '../services/medicoServices.js'
 
 // Crear médico
@@ -54,6 +54,19 @@ export const eliminarMedicoController = async (req, res) => {
     console.error('❌ Error al eliminar médico:', error)
     res.status(500).json({
       error: 'Error al eliminar médico',
+      detalle: error.message
+    })
+  }
+}
+
+export const listarMedicosPorEspecialidadController = async (req, res) => {
+  try {
+    const { id } = req.params
+    const medicos = await listarMedicosPorEspecialidadService(id)
+    res.json(medicos)
+  } catch (error) {
+    res.status(500).json({
+      error: 'Error al listar médicos por especialidad',
       detalle: error.message
     })
   }

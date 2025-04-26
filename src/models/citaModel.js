@@ -4,7 +4,7 @@ export class Cita {
       this.medico_id = medico_id
       this.fecha = fecha
       this.hora = hora
-      this.estado = estado || 'pendiente'
+      this.estado = estado 
       this.motivo = motivo
     }
   }

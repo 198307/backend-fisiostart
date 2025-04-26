@@ -3,7 +3,7 @@ import {
   crearMedicoController,
   listarMedicosController,
   actualizarMedicoController,
-  eliminarMedicoController
+  eliminarMedicoController,listarMedicosPorEspecialidadController
 } from '../controllers/medicoControllers.js'
 
 import { verifyToken } from '../middlewares/verifyToken.js'
@@ -42,6 +42,8 @@ router.delete(
   checkRole([1, 3]),
   eliminarMedicoController
 )
+
+router.get('/especialidad/:id', verifyToken, listarMedicosPorEspecialidadController)
 
 console.log('📦 Rutas de médico activadas')
 

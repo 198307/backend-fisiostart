@@ -1,13 +1,29 @@
+// 📄 src/routes/citaRoutes.js
 import { Router } from 'express'
-import { crearCitaController, listarCitasController,listarCitasMedicoController } from '../controllers/citaController.js'
+import {
+  crearCitaController,
+  listarCitasController,
+  listarCitasPorMedicoController,
+  actualizarEstadoCitaController,
+  eliminarCitaController
+} from '../controllers/citaController.js'
 import { verifyToken } from '../middlewares/verifyToken.js'
-import { checkRole } from '../middlewares/checkRole.js'
 
 const router = Router()
 
-// Acceso: administradores y secretarias
-router.get('/', verifyToken, checkRole([3, 2]), listarCitasController)
-router.post('/', verifyToken, checkRole([3, 2]), crearCitaController)
-router.get('/mis-citas', verifyToken, checkRole([1]), listarCitasMedicoController)
+// Crear cita
+router.post('/', verifyToken, crearCitaController)
+
+// Listar todas las citas (Admin)
+router.get('/', verifyToken, listarCitasController)
+
+// Listar citas de un médico
+router.get('/medico/:medico_id', verifyToken, listarCitasPorMedicoController)
+
+// Actualizar estado de cita
+router.put('/:id', verifyToken, actualizarEstadoCitaController)
+
+// Eliminar cita
+router.delete('/:id', verifyToken, eliminarCitaController)
 
 export default router

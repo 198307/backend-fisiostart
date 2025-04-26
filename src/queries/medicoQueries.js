@@ -84,3 +84,21 @@ export const eliminarMedico = `
   )
   DELETE FROM usuarios WHERE id = $1 AND rol_id = 1
 `
+export const obtenerMedicosPorEspecialidad = `
+  SELECT 
+    u.id,
+    u.cedula,
+    u.nombre,
+    u.apellidos,
+    u.telefono,
+    u.email
+  FROM 
+    usuarios u
+  JOIN 
+    medicos_especialidades me ON me.usuario_id = u.id
+  WHERE 
+    me.especialidad_id = $1
+    AND u.rol_id = 1 -- solo médicos
+  ORDER BY 
+    u.apellidos ASC
+`;
