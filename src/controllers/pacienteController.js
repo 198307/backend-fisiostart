@@ -4,7 +4,8 @@ import {
   listarPacientesService,
   listarPacientesPendientesService,
   actualizarPacienteService,
-  eliminarPacienteService,registrarConSolicitudService
+  eliminarPacienteService,registrarConSolicitudService,
+  buscarPacientePorCedulaService
 } from '../services/pacienteService.js'
 
 export const crearPacientePublicoController = async (req, res) => {
@@ -76,5 +77,20 @@ export const registrarConSolicitudController = async (req, res) => {
   } catch (error) {
     console.error('❌ Error en registrarConSolicitudController:', error)
     res.status(500).json({ error: 'Error al registrar solicitud', detalle: error.message })
+  }
+}
+// 🔹 Buscar paciente por cédula
+export const buscarPacientePorCedulaController = async (req, res) => {
+  try {
+    const { cedula } = req.params
+    const paciente = await buscarPacientePorCedulaService(cedula)
+
+    if (!paciente) {
+      return res.status(404).json({ error: 'Paciente no encontrado' })
+    }
+
+    res.json(paciente)
+  } catch (error) {
+    res.status(500).json({ error: 'Error al buscar paciente', detalle: error.message })
   }
 }
