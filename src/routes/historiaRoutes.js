@@ -1,26 +1,25 @@
-import { Router } from 'express'
+import { Router } from 'express';
 import {
-  crearHistoriaController,
-  listarHistoriasPorPacienteController,resumenHistoriasMedicoController,resumenHistoriasAdminController,
-  historiasPorPacienteYMedicoController,historiasPorPacienteAdminController,actualizarHistoriaController
-} from '../controllers/historiaController.js'
-import { verifyToken } from '../middlewares/verifyToken.js'
-import { checkRole } from '../middlewares/checkRole.js'
+  crearHistoriaClinicaController,
+  listarHistoriasClinicasController,
+  listarHistoriasPorPacienteController,
+  eliminarHistoriaClinicaController
+} from '../controllers/historiaController.js';
 
-const router = Router()
+import { verifyToken } from '../middlewares/verifyToken.js'; // 👈 Opcional si quieres proteger las rutas
 
-// Solo médicos pueden registrar historias
-router.post('/', verifyToken, checkRole([1, 3]), crearHistoriaController)
+const router = Router();
 
-// Médicos y admins pueden ver historias clínicas de un paciente
-router.get('/:paciente_id', verifyToken, checkRole([1, 3]), listarHistoriasPorPacienteController)
-router.get('/resumen/mis-pacientes', verifyToken, checkRole([1, 3]), resumenHistoriasMedicoController)
-router.get('/resumen/general', verifyToken, checkRole([1, 3]), resumenHistoriasAdminController)
-router.get('/paciente/:paciente_id', verifyToken, checkRole([1, 3]), historiasPorPacienteYMedicoController)
-router.get('/paciente/:paciente_id/admin', verifyToken, checkRole([1, 3]), historiasPorPacienteAdminController)
-router.put('/:id', verifyToken, checkRole([1, 3]), actualizarHistoriaController) // solo médicos
+// 📌 Crear nueva historia clínica
+router.post('/', verifyToken, crearHistoriaClinicaController);
 
+// 📌 Listar todas las historias clínicas
+router.get('/', verifyToken, listarHistoriasClinicasController);
 
+// 📌 Listar historias de un paciente específico
+router.get('/paciente/:paciente_id', verifyToken, listarHistoriasPorPacienteController);
 
+// 📌 Eliminar una historia clínica
+router.delete('/:id', verifyToken, eliminarHistoriaClinicaController);
 
-export default router
+export default router;

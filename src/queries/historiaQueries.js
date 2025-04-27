@@ -1,68 +1,91 @@
+// Insertar nueva historia clínica
 export const insertarHistoriaClinica = `
   INSERT INTO historias_clinicas (
-    paciente_id, fecha_atencion, alergias, medicamento,
-    nivel_glucosa, peso, estatura, imc,
-    problemas_salud, recomendaciones
-  )
-  VALUES ($1, CURRENT_DATE, $2, $3, $4, $5, $6, $7, $8, $9)
+    paciente_id,
+    medico_id,
+    especialidad_id,
+    fecha_atencion,
+    alergias,
+    medicamento,
+    nivel_glucosa,
+    peso,
+    estatura,
+    imc,
+    problemas_salud,
+    recomendaciones
+  ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
   RETURNING *
-`
+`;
 
+// Obtener todas las historias clínicas (con datos de paciente y médico)
+export const obtenerHistoriasClinicas = `
+  SELECT 
+    hc.id,
+    hc.fecha_atencion,
+    hc.alergias,
+    hc.medicamento,
+    hc.nivel_glucosa,
+    hc.peso,
+    hc.estatura,
+    hc.imc,
+    hc.problemas_salud,
+    hc.recomendaciones,
+    
+    -- Paciente
+    p.id AS paciente_id,
+    p.nombre AS paciente_nombre,
+    p.apellidos AS paciente_apellidos,
+    p.cedula AS paciente_cedula,
+    
+    -- Médico
+    m.id AS medico_id,
+    m.nombre AS medico_nombre,
+    m.apellidos AS medico_apellidos,
+    m.email AS medico_email,
+
+    -- Especialidad
+    e.nombre AS especialidad_nombre
+
+  FROM historias_clinicas hc
+  INNER JOIN pacientes p ON hc.paciente_id = p.id
+  INNER JOIN usuarios m ON hc.medico_id = m.id
+  LEFT JOIN especialidades e ON hc.especialidad_id = e.id
+  ORDER BY hc.fecha_atencion DESC
+`;
+
+// Obtener historias clínicas de un paciente específico
 export const obtenerHistoriasPorPaciente = `
-  SELECT * FROM historias_clinicas
-  WHERE paciente_id = $1
-  ORDER BY fecha_atencion DESC
-`
+  SELECT 
+    hc.id,
+    hc.fecha_atencion,
+    hc.alergias,
+    hc.medicamento,
+    hc.nivel_glucosa,
+    hc.peso,
+    hc.estatura,
+    hc.imc,
+    hc.problemas_salud,
+    hc.recomendaciones,
 
-export const obtenerUltimasHistoriasPorMedico = `
-  SELECT hc.*
-  FROM historias_clinicas hc
-  JOIN pacientes p ON p.id = hc.paciente_id
-  WHERE hc.paciente_id IN (
-    SELECT DISTINCT c.paciente_id
-    FROM citas c
-    WHERE c.medico_id = $1
-  )
-  AND hc.fecha_atencion = (
-    SELECT MAX(fecha_atencion)
-    FROM historias_clinicas
-    WHERE paciente_id = hc.paciente_id
-  )
-  ORDER BY hc.fecha_atencion DESC
-`
+    -- Médico
+    m.id AS medico_id,
+    m.nombre AS medico_nombre,
+    m.apellidos AS medico_apellidos,
+    m.email AS medico_email,
 
-export const obtenerUltimasHistoriasDeTodos = `
-  SELECT DISTINCT ON (paciente_id) *
-  FROM historias_clinicas
-  ORDER BY paciente_id, fecha_atencion DESC
-`
-export const obtenerHistoriasPacienteAtendidoPorMedico = `
-  SELECT hc.*
+    -- Especialidad
+    e.nombre AS especialidad_nombre
+
   FROM historias_clinicas hc
+  INNER JOIN usuarios m ON hc.medico_id = m.id
+  LEFT JOIN especialidades e ON hc.especialidad_id = e.id
   WHERE hc.paciente_id = $1
-    AND hc.paciente_id IN (
-      SELECT DISTINCT c.paciente_id
-      FROM citas c
-      WHERE c.medico_id = $2
-    )
   ORDER BY hc.fecha_atencion DESC
-`
-export const actualizarHistoriaClinica = `
-  UPDATE historias_clinicas
-  SET
-    alergias = $1,
-    medicamento = $2,
-    nivel_glucosa = $3,
-    peso = $4,
-    estatura = $5,
-    imc = $6,
-    problemas_salud = $7,
-    recomendaciones = $8
-  WHERE id = $9
-  RETURNING *
-`
+`;
+
+// Eliminar historia clínica
 export const eliminarHistoriaClinica = `
   DELETE FROM historias_clinicas
   WHERE id = $1
-  RETURNING *
-`
+`;
+
