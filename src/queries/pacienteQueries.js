@@ -49,11 +49,16 @@ export const actualizarPaciente = `
     email = $5,
     fecha_nacimiento = $6,
     sexo = $7,
-    estado = 'completo'
+    estado = 'completado'
   WHERE cedula = $8
   RETURNING *
 `
 
 export const eliminarPaciente = `
   DELETE FROM pacientes WHERE cedula = $1
+`
+// 🔍 Buscar paciente por cédula
+export const buscarPacientePorCedula = `
+  SELECT * FROM pacientes
+  WHERE cedula = $1
 `

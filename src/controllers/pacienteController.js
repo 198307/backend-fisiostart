@@ -4,7 +4,7 @@ import {
   listarPacientesService,
   listarPacientesPendientesService,
   actualizarPacienteService,
-  eliminarPacienteService
+  eliminarPacienteService,registrarConSolicitudService
 } from '../services/pacienteService.js'
 
 export const crearPacientePublicoController = async (req, res) => {
@@ -59,5 +59,22 @@ export const eliminarPacienteController = async (req, res) => {
     res.json({ message: 'Paciente eliminado correctamente' })
   } catch (error) {
     res.status(500).json({ error: 'Error al eliminar paciente', detalle: error.message })
+  }
+}
+
+// 🔥 Controller para registro público con solicitud
+export const registrarConSolicitudController = async (req, res) => {
+  try {
+    const { cedula, nombre, apellidos, telefono, email, especialidad_id } = req.body
+
+    const solicitud = await registrarConSolicitudService(
+      { cedula, nombre, apellidos, telefono, email },
+      especialidad_id
+    )
+
+    res.status(201).json({ message: 'Solicitud registrada exitosamente', solicitud })
+  } catch (error) {
+    console.error('❌ Error en registrarConSolicitudController:', error)
+    res.status(500).json({ error: 'Error al registrar solicitud', detalle: error.message })
   }
 }

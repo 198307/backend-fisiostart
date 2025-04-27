@@ -15,7 +15,7 @@ export const insertarCita = `
   RETURNING *
 `;
 
-// Listar todas las citas (modo Admin)
+// Listar todas las citas (modo Admin o Secretaria) 🛡️
 export const obtenerCitas = `
   SELECT 
     c.id,
@@ -28,16 +28,17 @@ export const obtenerCitas = `
     c.motivo
   FROM citas c
   JOIN pacientes p ON p.id = c.paciente_id
-  JOIN usuarios u ON u.id = c.medico_id
+  LEFT JOIN usuarios u ON u.id = c.medico_id
   LEFT JOIN especialidades e ON e.id = c.especialidad_id
   ORDER BY c.fecha DESC, c.hora DESC
 `;
 
-// Listar citas de un médico específico
+// Listar citas de UN médico específico 🎯
 export const obtenerCitasPorMedico = `
   SELECT 
     c.id,
     p.nombre || ' ' || p.apellidos AS paciente_nombre,
+    u.nombre || ' ' || u.apellidos AS medico_nombre,
     e.nombre AS especialidad_nombre,
     c.fecha,
     c.hora,
@@ -45,6 +46,7 @@ export const obtenerCitasPorMedico = `
     c.motivo
   FROM citas c
   JOIN pacientes p ON p.id = c.paciente_id
+  LEFT JOIN usuarios u ON u.id = c.medico_id
   LEFT JOIN especialidades e ON e.id = c.especialidad_id
   WHERE c.medico_id = $1
   ORDER BY c.fecha DESC, c.hora DESC

@@ -5,8 +5,10 @@ import {
   obtenerPacientes,
   obtenerPacientesPendientes,
   actualizarPaciente,
-  eliminarPaciente
+  eliminarPaciente,buscarPacientePorCedula
 } from '../queries/pacienteQueries.js'
+
+import { insertarSolicitudCita } from '../queries/solicitudQueries.js'
 
 // 🔹 Registro desde formulario público (estado: pendiente)
 export const crearPacientePublicoService = async (datos) => {
@@ -109,4 +111,42 @@ export const actualizarPacienteService = async (datos) => {
 export const eliminarPacienteService = async (cedula) => {
   await pool.query(eliminarPaciente, [cedula])
   return { success: true }
+}
+
+export const buscarPacientePorCedulaService = async (cedula) => {
+  const result = await pool.query(buscarPacientePorCedula, [cedula])
+  return result.rows[0] || null // Devuelve null si no existe
+}
+
+export const registrarConSolicitudService = async (pacienteData, especialidad_id) => {
+  const { cedula, nombre, apellidos, telefono, email } = pacienteData
+
+  // 1. Buscar paciente por cédula
+  const pacienteExistente = await pool.query(buscarPacientePorCedula, [cedula])
+
+  let pacienteId
+
+  if (pacienteExistente.rows.length > 0) {
+    console.log('🧠 Paciente ya existe, solo insertamos solicitud de cita')
+    pacienteId = pacienteExistente.rows[0].id
+  } else {
+    console.log('✨ Nuevo paciente, registrando...')
+    const nuevoPaciente = await pool.query(insertarPacientePublico, [
+      cedula,
+      nombre,
+      apellidos,
+      telefono,
+      email
+    ])
+    pacienteId = nuevoPaciente.rows[0].id
+  }
+
+  // 2. Crear solicitud de cita
+  const nuevaSolicitud = await pool.query(insertarSolicitudCita, [
+    pacienteId,
+    especialidad_id,
+    'pendiente'
+  ])
+
+  return nuevaSolicitud.rows[0] // Retorna la solicitud creada
 }

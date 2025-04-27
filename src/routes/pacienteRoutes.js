@@ -5,7 +5,7 @@ import {
   listarPacientesController,
   listarPacientesPendientesController,
   actualizarPacienteController,
-  eliminarPacienteController
+  eliminarPacienteController,registrarConSolicitudController
 } from '../controllers/pacienteController.js'
 import { verifyToken } from '../middlewares/verifyToken.js'
 
@@ -20,5 +20,5 @@ router.get('/pendientes', verifyToken, listarPacientesPendientesController)
 router.post('/', crearPacienteController)
 router.put('/', verifyToken, actualizarPacienteController)
 router.delete('/:cedula', verifyToken, eliminarPacienteController)
-
+router.post('/registrar-solicitud', registrarConSolicitudController)
 export default router

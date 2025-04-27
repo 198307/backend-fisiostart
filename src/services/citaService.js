@@ -33,10 +33,44 @@ export const crearCitaService = async (datos) => {
   return result.rows[0]
 }
 
-// Listar todas las citas
-export const listarCitasService = async () => {
-  const result = await pool.query(obtenerCitas)
-  return result.rows
+// Listar citas (según el rol del usuario)
+export const listarCitasService = async (usuario) => {
+  let rolTexto = ''
+
+  // 📌 Normalizar el rol recibido
+  if (typeof usuario.rol === 'object') {
+    rolTexto = usuario.rol.nombre?.toLowerCase().trim()
+  } else if (typeof usuario.rol === 'string') {
+    rolTexto = usuario.rol.toLowerCase().trim()
+  } else if (typeof usuario.rol === 'number') {
+    // Mapear ID de rol a texto
+    switch (usuario.rol) {
+      case 1:
+        rolTexto = 'medico'
+        break
+      case 2:
+        rolTexto = 'secretaria'
+        break
+      case 3:
+        rolTexto = 'administrador'
+        break
+      default:
+        throw new Error('Rol desconocido en usuario')
+    }
+  } else {
+    throw new Error('Formato de rol inválido')
+  }
+
+  // 🔥 Lógica según el rol
+  if (rolTexto === 'administrador' || rolTexto === 'secretaria') {
+    const result = await pool.query(obtenerCitas)
+    return result.rows
+  } else if (rolTexto === 'medico') {
+    const result = await pool.query(obtenerCitasPorMedico, [usuario.id])
+    return result.rows
+  } else {
+    throw new Error('Rol no autorizado para listar citas')
+  }
 }
 
 // Listar citas de un médico específico
