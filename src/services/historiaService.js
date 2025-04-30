@@ -1,17 +1,59 @@
-import pool from '../config/conex.js';
-import {
-  insertarHistoriaClinica,
-  obtenerHistoriasClinicas,
-  obtenerHistoriasPorPaciente,
-  eliminarHistoriaClinica
-} from '../queries/historiaQueries.js';
+// 📁 src/services/historiaClinicaService.js
 
-// 🔹 Crear una nueva historia clínica
+import pool from '../config/conex.js'
+import {
+  crearHistoriaClinicaQuery,
+  listarHistoriasClinicasQuery,
+  obtenerHistoriaPorIdQuery,
+  actualizarHistoriaClinicaQuery,
+  eliminarHistoriaClinicaQuery
+} from '../queries/historiaClinicaQueries.js'
+
+// 🔹 Crear una historia clínica
 export const crearHistoriaClinicaService = async (datos) => {
   const {
-    paciente_id,
-    medico_id,
-    especialidad_id,
+    fecha_atencion,
+    alergias,
+    medicamento,
+    nivel_glucosa,
+    peso,
+    estatura,
+    imc,
+    problemas_salud,
+    recomendaciones,
+    cita_id
+  } = datos
+
+  const result = await pool.query(crearHistoriaClinicaQuery, [
+    fecha_atencion,
+    alergias,
+    medicamento,
+    nivel_glucosa,
+    peso,
+    estatura,
+    imc,
+    problemas_salud,
+    recomendaciones,
+    cita_id
+  ])
+  return result.rows[0]
+}
+
+// 🔹 Listar todas las historias (con JOIN)
+export const listarHistoriasClinicasService = async () => {
+  const result = await pool.query(listarHistoriasClinicasQuery)
+  return result.rows
+}
+
+// 🔹 Obtener una historia por ID
+export const obtenerHistoriaPorIdService = async (id) => {
+  const result = await pool.query(obtenerHistoriaPorIdQuery, [id])
+  return result.rows[0] || null
+}
+
+// 🔹 Actualizar historia
+export const actualizarHistoriaClinicaService = async (id, datos) => {
+  const {
     fecha_atencion,
     alergias,
     medicamento,
@@ -21,13 +63,10 @@ export const crearHistoriaClinicaService = async (datos) => {
     imc,
     problemas_salud,
     recomendaciones
-  } = datos;
+  } = datos
 
-  const result = await pool.query(insertarHistoriaClinica, [
-    paciente_id,
-    medico_id,
-    especialidad_id,
-    fecha_atencion || new Date(), // Si no envían fecha, usamos hoy
+  const result = await pool.query(actualizarHistoriaClinicaQuery, [
+    fecha_atencion,
     alergias,
     medicamento,
     nivel_glucosa,
@@ -35,26 +74,14 @@ export const crearHistoriaClinicaService = async (datos) => {
     estatura,
     imc,
     problemas_salud,
-    recomendaciones
-  ]);
+    recomendaciones,
+    id
+  ])
+  return result.rows[0]
+}
 
-  return result.rows[0];
-};
-
-// Obtener todas las historias clínicas (con datos de pacientes, médicos y especialidad)
-export const listarHistoriasClinicasService = async () => {
-  const result = await pool.query(obtenerHistoriasClinicas);
-  return result.rows;
-};
-
-// 🔹 Obtener historias de un paciente específico
-export const listarHistoriasPorPacienteService = async (paciente_id) => {
-  const result = await pool.query(obtenerHistoriasPorPaciente, [paciente_id]);
-  return result.rows;
-};
-
-// Eliminar una historia clínica
+// 🔹 Eliminar historia
 export const eliminarHistoriaClinicaService = async (id) => {
-  await pool.query(eliminarHistoriaClinica, [id]);
-  return { success: true };
-};
+  await pool.query(eliminarHistoriaClinicaQuery, [id])
+  return { success: true }
+}
