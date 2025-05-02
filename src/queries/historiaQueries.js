@@ -16,7 +16,7 @@ export const insertarHistoriaClinica = `
 `;
 
 // 📌 Actualizar historia clínica
-export const actualizarHistoriaClinica = `
+export const  actualizarHistoriaClinicaQuery = `
   UPDATE historias_clinicas SET
     fecha_atencion = $1,
     alergias = $2,

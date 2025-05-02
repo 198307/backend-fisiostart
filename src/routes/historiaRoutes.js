@@ -1,25 +1,21 @@
-import { Router } from 'express';
+// 📄 src/routes/historiaClinicaRoutes.js
+import { Router } from 'express'
 import {
   crearHistoriaClinicaController,
-  listarHistoriasClinicasController,
-  listarHistoriasPorPacienteController,
+  obtenerHistoriasClinicasController,
+  obtenerHistoriaClinicaPorIdController,
+  actualizarHistoriaClinicaController,
   eliminarHistoriaClinicaController
-} from '../controllers/historiaController.js';
+} from '../controllers/historiaController.js'
+import { verifyToken } from '../middlewares/verifyToken.js'
 
-import { verifyToken } from '../middlewares/verifyToken.js'; // 👈 Opcional si quieres proteger las rutas
+const router = Router()
 
-const router = Router();
+// 📌 Rutas protegidas
+router.post('/', verifyToken, crearHistoriaClinicaController)
+router.get('/', verifyToken, obtenerHistoriasClinicasController)
+router.get('/:id', verifyToken, obtenerHistoriaClinicaPorIdController)
+router.put('/:id', verifyToken, actualizarHistoriaClinicaController)
+router.delete('/:id', verifyToken, eliminarHistoriaClinicaController)
 
-// 📌 Crear nueva historia clínica
-router.post('/', verifyToken, crearHistoriaClinicaController);
-
-// 📌 Listar todas las historias clínicas
-router.get('/', verifyToken, listarHistoriasClinicasController);
-
-// 📌 Listar historias de un paciente específico
-router.get('/paciente/:paciente_id', verifyToken, listarHistoriasPorPacienteController);
-
-// 📌 Eliminar una historia clínica
-router.delete('/:id', verifyToken, eliminarHistoriaClinicaController);
-
-export default router;
+export default router
