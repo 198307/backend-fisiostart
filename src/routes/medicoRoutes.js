@@ -23,7 +23,7 @@ router.post(
 router.get(
   '/',
   verifyToken,
-  checkRole([2, 3]),
+  checkRole([1,2, 3]),
   listarMedicosController
 )
 
