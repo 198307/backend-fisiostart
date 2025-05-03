@@ -19,6 +19,7 @@ export const insertarCita = `
 export const obtenerCitas = `
   SELECT 
     c.id,
+    c.paciente_id, -- ✅ necesario para relaciones posteriores
     p.nombre || ' ' || p.apellidos AS paciente_nombre,
     u.nombre || ' ' || u.apellidos AS medico_nombre,
     e.nombre AS especialidad_nombre,
@@ -37,6 +38,7 @@ export const obtenerCitas = `
 export const obtenerCitasPorMedico = `
   SELECT 
     c.id,
+    c.paciente_id, -- ✅ incluir aquí también
     p.nombre || ' ' || p.apellidos AS paciente_nombre,
     u.nombre || ' ' || u.apellidos AS medico_nombre,
     e.nombre AS especialidad_nombre,

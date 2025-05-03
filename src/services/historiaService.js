@@ -3,13 +3,20 @@ import pool from '../config/conex.js'
 import {
   insertarHistoriaClinica,
   actualizarHistoriaClinicaQuery,
-  obtenerHistoriaClinicaPorId, // ✅ nombre corregido
-  obtenerHistoriasClinicas,     // ✅ nombre corregido
+  obtenerHistoriaClinicaPorId,
+  obtenerHistoriasClinicas,
   eliminarHistoriaClinica
 } from '../queries/historiaQueries.js'
 
 // 🔹 Crear una historia clínica
 export const crearHistoriaClinicaService = async (datos) => {
+  console.log('📥 [Service] Datos recibidos en crearHistoriaClinicaService:', datos)
+
+  // Verificar si hay campos no esperados
+  if ('paciente_id' in datos) {
+    console.warn('⚠️ El objeto contiene un campo inesperado: paciente_id')
+  }
+
   const {
     fecha_atencion,
     alergias,
@@ -23,7 +30,7 @@ export const crearHistoriaClinicaService = async (datos) => {
     cita_id
   } = datos
 
-  const result = await pool.query(insertarHistoriaClinica, [
+  const valores = [
     fecha_atencion,
     alergias,
     medicamento,
@@ -34,7 +41,14 @@ export const crearHistoriaClinicaService = async (datos) => {
     problemas_salud,
     recomendaciones,
     cita_id
-  ])
+  ]
+
+  console.log('📤 [Service] Valores que se enviarán al query INSERT:', valores)
+
+  const result = await pool.query(insertarHistoriaClinica, valores)
+
+  console.log('✅ [Service] Resultado insertado:', result.rows[0])
+
   return result.rows[0]
 }
 

@@ -12,6 +12,8 @@ import {
 export const crearHistoriaClinicaController = async (req, res) => {
   try {
     const historia = await crearHistoriaClinicaService(req.body)
+    console.log('🛂 req.body recibido:', req.body)
+
     res.status(201).json(historia)
   } catch (error) {
     res.status(500).json({ error: 'Error al crear la historia clínica', detalle: error.message })

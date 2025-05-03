@@ -16,7 +16,7 @@ export const insertarHistoriaClinica = `
 `;
 
 // 📌 Actualizar historia clínica
-export const  actualizarHistoriaClinicaQuery = `
+export const actualizarHistoriaClinicaQuery = `
   UPDATE historias_clinicas SET
     fecha_atencion = $1,
     alergias = $2,
@@ -50,6 +50,7 @@ export const obtenerHistoriasClinicas = `
     hc.imc,
     hc.problemas_salud,
     hc.recomendaciones,
+    p.id AS paciente_id,
     p.nombre AS paciente_nombre,
     p.apellidos AS paciente_apellidos,
     DATE_PART('year', AGE(CURRENT_DATE, p.fecha_nacimiento)) AS edad_paciente,
@@ -68,6 +69,7 @@ export const obtenerHistoriasClinicas = `
 export const obtenerHistoriaClinicaPorId = `
   SELECT 
     hc.*,
+    p.id AS paciente_id,
     p.nombre AS paciente_nombre,
     p.apellidos AS paciente_apellidos,
     u.nombre AS medico_nombre,
