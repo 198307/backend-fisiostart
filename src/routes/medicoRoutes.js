@@ -15,7 +15,7 @@ const router = Router()
 router.post(
   '/',
   verifyToken,
-  checkRole([1, 3]), // administrador o secretaria
+  checkRole([2,3]), // administrador o secretaria
   crearMedicoController
 )
 
@@ -23,7 +23,7 @@ router.post(
 router.get(
   '/',
   verifyToken,
-  checkRole([1, 3]),
+  checkRole([2, 3]),
   listarMedicosController
 )
 
@@ -31,7 +31,7 @@ router.get(
 router.put(
   '/:id',
   verifyToken,
-  checkRole([1, 3]),
+  checkRole([2, 3]),
   actualizarMedicoController
 )
 
@@ -39,7 +39,7 @@ router.put(
 router.delete(
   '/:id',
   verifyToken,
-  checkRole([1, 3]),
+  checkRole([2, 3]),
   eliminarMedicoController
 )
 

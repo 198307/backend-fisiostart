@@ -5,7 +5,8 @@ import {
   actualizarHistoriaClinicaQuery,
   obtenerHistoriaClinicaPorId,
   obtenerHistoriasClinicas,
-  eliminarHistoriaClinica
+  eliminarHistoriaClinica,
+  obtenerHistoriasPorPacienteQuery
 } from '../queries/historiaQueries.js'
 
 // 🔹 Crear una historia clínica
@@ -97,4 +98,9 @@ export const actualizarHistoriaClinicaService = async (id, datos) => {
 export const eliminarHistoriaClinicaService = async (id) => {
   await pool.query(eliminarHistoriaClinica, [id])
   return { success: true }
+}
+
+export const obtenerHistoriasPorPaciente = async (pacienteId) => {
+  const { rows } = await pool.query(obtenerHistoriasPorPacienteQuery, [pacienteId])
+  return rows
 }

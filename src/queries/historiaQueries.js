@@ -82,3 +82,17 @@ export const obtenerHistoriaClinicaPorId = `
   LEFT JOIN especialidades e ON e.id = c.especialidad_id
   WHERE hc.id = $1
 `;
+
+export const obtenerHistoriasPorPacienteQuery = `
+  SELECT h.*, 
+         u.nombre AS medico_nombre, 
+         u.apellidos AS medico_apellidos, 
+         e.nombre AS especialidad
+  FROM historias_clinicas h
+  JOIN citas c ON h.cita_id = c.id
+  JOIN usuarios u ON c.medico_id = u.id
+  LEFT JOIN medicos_especialidades me ON me.usuario_id = u.id
+  LEFT JOIN especialidades e ON me.especialidad_id = e.id
+  WHERE c.paciente_id = $1
+  ORDER BY h.fecha_atencion DESC
+`

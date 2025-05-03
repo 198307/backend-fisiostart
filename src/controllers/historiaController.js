@@ -5,7 +5,8 @@ import {
   listarHistoriasClinicasService,
   obtenerHistoriaPorIdService,
   actualizarHistoriaClinicaService,
-  eliminarHistoriaClinicaService
+  eliminarHistoriaClinicaService,
+  obtenerHistoriasPorPaciente
 } from '../services/historiaService.js'
 
 // 🔹 Crear historia
@@ -65,5 +66,16 @@ export const eliminarHistoriaClinicaController = async (req, res) => {
     res.json({ message: 'Historia clínica eliminada correctamente' })
   } catch (error) {
     res.status(500).json({ error: 'Error al eliminar historia clínica', detalle: error.message })
+  }
+}
+
+export const obtenerHistoriasPorPacienteController = async (req, res) => {
+  try {
+    const { id } = req.params
+    const historias = await obtenerHistoriasPorPaciente(id)
+    res.json(historias)
+  } catch (error) {
+    console.error('Error al obtener historias del paciente:', error)
+    res.status(500).json({ error: 'Error interno del servidor' })
   }
 }
